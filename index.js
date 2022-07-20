@@ -20,7 +20,7 @@ bot.on('message', msg => {
         const client = new imageSearch('ffeb8f3554ef89179', 'AIzaSyC36DzU-UZZGyp1cro1rr13Y2em_ZFgDuA');
         const options = {page:1};
 
-        client.search('boobs', options)
+        client.search('nice boobs', options)
             .then(images => {
                 let imgPos = Math.floor(Math.random() * images.length);
                 const options1 = {
