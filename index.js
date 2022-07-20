@@ -31,10 +31,11 @@ bot.on('message', msg => {
 
                 download.image(options1)
                     .then(({ filename }) => {
-                        bot.sendPhoto(chatId, filename);
-                        fs.unlink(filename, err => {
-                            if(err) throw err; 
-                        });
+                        bot.sendPhoto(chatId, filename).then(()=>{
+                            fs.unlink(filename, err => {
+                                if(err) throw err;
+                            });
+                        })
                     })
                     .catch((err) => console.error(err));
             })
