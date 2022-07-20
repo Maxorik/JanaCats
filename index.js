@@ -3,6 +3,7 @@ const token = '5384880922:AAGY7Xnv0RlaD2IuBTZkDWCs-REMWscTk5o';
 const bot = new TelegramApi(token, {polling: true});
 const imageSearch = require('image-search-google');
 const download = require('image-downloader');
+const fs = require('fs');
 
 // базовые команды
 bot.setMyCommands([
@@ -31,7 +32,9 @@ bot.on('message', msg => {
                 download.image(options1)
                     .then(({ filename }) => {
                         bot.sendPhoto(chatId, filename);
-                        console.log('Saved to', filename);
+                        fs.unlink(filename, err => {
+                            if(err) throw err; 
+                        });
                     })
                     .catch((err) => console.error(err));
             })
