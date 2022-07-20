@@ -14,13 +14,12 @@ bot.setMyCommands([
 bot.on('message', msg => {
     const chatId = msg.chat.id;
     const text = msg.text;
-    let linkMessage = '';
 
-    //тест картинок
     if(text === '/cats') {
         const client = new imageSearch('ffeb8f3554ef89179', 'AIzaSyC36DzU-UZZGyp1cro1rr13Y2em_ZFgDuA');
         const options = {page:1};
 
+        // поиск картинки
         client.search('Красивая большая грудь', options)
             .then(images => {
                 let imgPos = Math.floor(Math.random() * images.length);
@@ -29,6 +28,7 @@ bot.on('message', msg => {
                     dest: '../../img',
                 };
 
+                // скачиваем картинку, выдаем боту и удаляем с сервера
                 download.image(options1)
                     .then(({ filename }) => {
                         bot.sendPhoto(chatId, filename).then(()=>{
