@@ -22,9 +22,7 @@ bot.on('message', msg => {
     if(text === '/start' || text === '/start s') {
         const client = new imageSearch('ffeb8f3554ef89179', 'AIzaSyC36DzU-UZZGyp1cro1rr13Y2em_ZFgDuA');
         const options = {page:1};
-        const phraseList = [' красивая пышная грудь ', ' красивая женская грудь ', ' аппетитная грудь ', ' большие титьки '];
-
-        try { sendMessageTask.stop(); } catch (e) {}
+        const phraseList = [' красивая пышная грудь ', ' красивая женская грудь ', ' голая женская грудь ', ' красивые большие титьки '];
 
         sendImage();
 
@@ -33,6 +31,8 @@ bot.on('message', msg => {
         let sendMessageTask = cron.schedule('0 */1 * * *', () => {
             sendImage();
         });
+
+        try { sendMessageTask.stop(); } catch (e) {}
         sendMessageTask.start();
 
         // отправка картинки
