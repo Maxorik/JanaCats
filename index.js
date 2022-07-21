@@ -4,45 +4,61 @@ const bot = new TelegramApi(token, {polling: true});
 const imageSearch = require('image-search-google');
 const download = require('image-downloader');
 const fs = require('fs');
+const cron = require('node-cron');
 
 // базовые команды
 bot.setMyCommands([
-    {command: '/start', description: 'Запуск бота'},
-    {command: '/cats', description: 'Секретная опция :3'},
+    {command: '/start', description: 'Запуск бота'}
 ])
+
+function randPosition(max) {
+    return Math.floor(Math.random() * max);
+}
 
 bot.on('message', msg => {
     const chatId = msg.chat.id;
     const text = msg.text;
 
-    if(text === '/cats') {
+    if(text === '/start' || text === '/start s') {
         const client = new imageSearch('ffeb8f3554ef89179', 'AIzaSyC36DzU-UZZGyp1cro1rr13Y2em_ZFgDuA');
         const options = {page:1};
+        const phraseList = [' красивая пышная грудь ', ' красивая женская грудь ', ' аппетитная грудь ', ' большие титьки '];
 
-        // поиск картинки
-        client.search('Красивая большая грудь', options)
-            .then(images => {
-                let imgPos = Math.floor(Math.random() * images.length);
-                const options1 = {
-                    url: images[imgPos].url,
-                    dest: '../../img',
-                };
+        try { sendMessageTask.stop(); } catch (e) {}
 
-                // скачиваем картинку, выдаем боту и удаляем с сервера
-                download.image(options1)
-                    .then(({ filename }) => {
-                        bot.sendPhoto(chatId, filename).then(()=>{
-                            fs.unlink(filename, err => {
-                                if(err) throw err;
-                            });
+        sendImage();
+
+        // отправка каждый час
+        // TODO проверка на время 09.00 - 18.00
+        let sendMessageTask = cron.schedule('0 */1 * * *', () => {
+            sendImage();
+        });
+        sendMessageTask.start();
+
+        // отправка картинки
+        function sendImage() {
+            let phraseSearch = phraseList[randPosition(phraseList.length)];
+
+            // поиск картинки
+            client.search(phraseSearch, options)
+                .then(images => {
+                    const options1 = {
+                        url: images[randPosition(images.length)].url,
+                        dest: '../../img',
+                    };
+
+                    // скачиваем картинку, выдаем боту и удаляем с сервера
+                    download.image(options1)
+                        .then(({ filename }) => {
+                            bot.sendPhoto(chatId, filename).then(()=>{
+                                fs.unlink(filename, err => {
+                                    if(err) throw err;
+                                });
+                            })
                         })
-                    })
-                    .catch((err) => console.error(err));
-            })
-            .catch(error => console.log(error));
-    }
-
-    if(text === '/start' || text === '/start s') {
-        bot.sendMessage(chatId, `${msg.from.first_name}, привет! \nвыбирай в опциях "/cats"`)
+                        .catch((err) => console.error(err));
+                })
+                .catch(error => console.log(error));
+        }
     }
 });
