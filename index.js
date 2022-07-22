@@ -9,7 +9,7 @@ const cron = require('node-cron');
 // базовые команды
 bot.setMyCommands([
     {command: '/start', description: 'Запуск бота'}
-])
+]);
 
 function randPosition(max) {
     return Math.floor(Math.random() * max);
@@ -27,9 +27,11 @@ bot.on('message', msg => {
         sendImage();
 
         // отправка каждый час
-        // TODO проверка на время 09.00 - 18.00
         let sendMessageTask = cron.schedule('0 */1 * * *', () => {
-            sendImage();
+            let today = new Date();
+            if(today.getHours() > 2 && today.getHours() < 11) {
+                sendImage();
+            }
         });
 
         try { sendMessageTask.stop(); } catch (e) {}
