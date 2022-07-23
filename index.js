@@ -23,18 +23,17 @@ bot.on('message', msg => {
     if(text === '/start' || text === '/start s') {
         const client = new imageSearch('ffeb8f3554ef89179', 'AIzaSyC36DzU-UZZGyp1cro1rr13Y2em_ZFgDuA');
         const options = {page:1};
-        const phraseList = axios
-            .get('https://somedata-e3056-default-rtdb.firebaseio.com/jana_phrases.json')
-            .then(res => {
-                let list = res.data,
-                    key = Object.keys(list)[0];
-                return list[key].phraseList;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        let phraseList;
 
-        sendImage();
+        // получаем словарь запросов
+        axios.get('https://somedata-e3056-default-rtdb.firebaseio.com/jana_phrases.json')
+        .then(res => {
+            let list = res.data,
+                key = Object.keys(list)[0];
+            phraseList = list[key].phraseList;
+        }).then(() => {
+            sendImage();
+        })
 
         // отправка каждый час
         let sendMessageTask = cron.schedule('0 */1 * * *', () => {
