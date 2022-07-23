@@ -5,6 +5,7 @@ const imageSearch = require('image-search-google');
 const download = require('image-downloader');
 const fs = require('fs');
 const cron = require('node-cron');
+const axios = require('axios');
 
 // базовые команды
 bot.setMyCommands([
@@ -22,7 +23,16 @@ bot.on('message', msg => {
     if(text === '/start' || text === '/start s') {
         const client = new imageSearch('ffeb8f3554ef89179', 'AIzaSyC36DzU-UZZGyp1cro1rr13Y2em_ZFgDuA');
         const options = {page:1};
-        const phraseList = [' красивая пышная грудь ', ' красивая женская грудь ', ' голая женская грудь ', ' красивые большие титьки '];
+        const phraseList = axios
+            .get('https://somedata-e3056-default-rtdb.firebaseio.com/jana_phrases.json')
+            .then(res => {
+                let list = res.data,
+                    key = Object.keys(list)[0];
+                return list[key].phraseList;
+            })
+            .catch(error => {
+                console.error(error);
+            });
 
         sendImage();
 
