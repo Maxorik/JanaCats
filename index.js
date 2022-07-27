@@ -6,10 +6,12 @@ const download = require('image-downloader');
 const fs = require('fs');
 const cron = require('node-cron');
 const axios = require('axios');
+const db = require('./src/database/database')
 
 // базовые команды
 bot.setMyCommands([
-    {command: '/start', description: 'Запуск бота'}
+    {command: '/start', description: 'Запуск бота'},
+    {command: '/subscribers', description: 'Сколько нас?'}
 ]);
 
 function randPosition(max) {
@@ -24,6 +26,8 @@ bot.on('message', msg => {
         const client = new imageSearch('ffeb8f3554ef89179', 'AIzaSyC36DzU-UZZGyp1cro1rr13Y2em_ZFgDuA');
         const options = {page:1};
         let phraseList;
+
+        db.addNewUser(msg);
 
         // получаем словарь запросов
         axios.get('https://somedata-e3056-default-rtdb.firebaseio.com/jana_phrases.json')
@@ -71,5 +75,14 @@ bot.on('message', msg => {
                 })
                 .catch(error => console.log(error));
         }
+    }
+
+    if(text === '/subscribers') {
+        new Promise((resolve, reject) => {
+            db.getCountOfUsers(resolve, reject);
+        }).then( (res) => {
+            console.log(res);
+            // bot.sendMessage(chatId, `Ого! Подписчиков котиков - ${res}`);
+        });
     }
 });

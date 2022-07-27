@@ -20,6 +20,7 @@
     "node-telegram-bot-api": "^0.58.0",
     "nodemon": "^2.0.18",
     "parse": "^3.4.2",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "sqlite3": "^5.0.10"
   }
 }
