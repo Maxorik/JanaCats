@@ -81,8 +81,7 @@ bot.on('message', msg => {
         new Promise((resolve, reject) => {
             db.getCountOfUsers(resolve, reject);
         }).then( (res) => {
-            console.log(res);
-            // bot.sendMessage(chatId, `Ого! Подписчиков котиков - ${res}`);
+            bot.sendMessage(chatId, `Ого! Подписчиков котиков - ${res}`);
         });
     }
 });
