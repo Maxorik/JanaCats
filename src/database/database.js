@@ -24,10 +24,11 @@ function getCountOfUsers(resolve, reject) {
         let recordsList = [];
         db.each("SELECT * FROM users", (err, row) => {
             recordsList.push(row);
+        }, () => {
             resolve(recordsList.length);
+            db.close();
         });
     });
-    db.close();
 }
 
 module.exports = { addNewUser, getCountOfUsers }
