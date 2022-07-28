@@ -4,8 +4,8 @@ const tableName = 'users';
 
 function addNewUser(payload) {
     db.serialize(() => {
-        let sqlGet = `SELECT id FROM users WHERE id = ?`;
-        let sqlInsert = `INSERT INTO users (id, first_name, username, date1, date2)
+        let sqlGet = `SELECT id FROM ${tableName} WHERE id = ?`;
+        let sqlInsert = `INSERT INTO ${tableName} (id, first_name, username, date1, date2)
                                  VALUES ("${payload.from.id}", "${payload.from.first_name}", "${payload.from.username}",
                                          "${payload.date}", "${payload.date}")`;
         const userId = payload.from.id;
@@ -19,16 +19,16 @@ function addNewUser(payload) {
     db.close();
 }
 
-function getCountOfUsers(resolve, reject) {
+function getUserList(resolve, reject) {
     db.serialize(() => {
         let recordsList = [];
-        db.each("SELECT * FROM users", (err, row) => {
+        db.each(`SELECT * FROM ${tableName}`, (err, row) => {
             recordsList.push(row);
         }, () => {
-            resolve(recordsList.length);
-            db.close();
+            // db.close(); - не надо (почему?)
+            resolve(recordsList);
         });
     });
 }
 
-module.exports = { addNewUser, getCountOfUsers }
+module.exports = { addNewUser, getUserList }

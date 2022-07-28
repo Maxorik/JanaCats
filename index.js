@@ -6,7 +6,8 @@ const download = require('image-downloader');
 const fs = require('fs');
 const cron = require('node-cron');
 const axios = require('axios');
-const db = require('./src/database/database')
+const db = require('./src/database/database');
+const ext = require('./src/extended');
 
 // базовые команды
 bot.setMyCommands([
@@ -79,9 +80,22 @@ bot.on('message', msg => {
 
     if(text === '/subscribers') {
         new Promise((resolve, reject) => {
-            db.getCountOfUsers(resolve, reject);
+            db.getUserList(resolve, reject);
         }).then( (res) => {
-            bot.sendMessage(chatId, `Ого! Подписчиков котиков - ${res}`);
+            bot.sendMessage(chatId, `Ого! Подписчиков котиков - ${res.length}`);
+        });
+    }
+
+    if(text === '/userlist') {
+        new Promise((resolve, reject) => {
+            db.getUserList(resolve, reject);
+        }).then( (res) => {
+            let userlist = res.map((user, i) => {
+                let userDate = ext.getDate(new Date (user.date1 * 1000));
+                return `${i+1}.   ${user.username},   ${user.first_name},   запуск:  ${userDate}\n`;
+            });
+
+            bot.sendMessage(chatId, `${userlist.join('')}`);
         });
     }
 });
