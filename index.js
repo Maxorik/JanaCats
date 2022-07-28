@@ -15,10 +15,6 @@ bot.setMyCommands([
     {command: '/subscribers', description: 'Сколько нас?'}
 ]);
 
-function randPosition(max) {
-    return Math.floor(Math.random() * max);
-}
-
 bot.on('message', msg => {
     const chatId = msg.chat.id;
     const text = msg.text;
@@ -26,7 +22,7 @@ bot.on('message', msg => {
     if(text === '/start' || text === '/start s') {
         const client = new imageSearch('ffeb8f3554ef89179', 'AIzaSyC36DzU-UZZGyp1cro1rr13Y2em_ZFgDuA');
         const options = {page:1};
-        let phraseList;
+        let phraseList = '', extPhrase = '';
 
         db.addNewUser(msg);
 
@@ -34,8 +30,9 @@ bot.on('message', msg => {
         axios.get('https://somedata-e3056-default-rtdb.firebaseio.com/jana_phrases.json')
         .then(res => {
             let list = res.data,
-                key = Object.keys(list)[0];
-            phraseList = list[key].phraseList;
+                key = Object.keys(list)[1];
+            phraseList = list[key];
+            extPhrase = res.data['ext'];
         }).then(() => {
             sendImage();
         })
@@ -53,13 +50,13 @@ bot.on('message', msg => {
 
         // отправка картинки
         function sendImage() {
-            let phraseSearch = phraseList[randPosition(phraseList.length)];
+            let phraseSearch = phraseList[ext.randPosition(phraseList.length)] + ' ' + extPhrase;
 
             // поиск картинки
             client.search(phraseSearch, options)
                 .then(images => {
                     const options1 = {
-                        url: images[randPosition(images.length)].url,
+                        url: images[ext.randPosition(images.length)].url,
                         dest: '../../img',
                     };
 

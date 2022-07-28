@@ -14,4 +14,9 @@ function getDate(date) {
     return d.slice(0, 3).join('.') + ' ' + d.slice(3).join(':');
 }
 
-module.exports = { getDate };
+// случайное число до максимума
+function randPosition(max) {
+    return Math.floor(Math.random() * max);
+}
+
+module.exports = { getDate, randPosition };

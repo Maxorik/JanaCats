@@ -11,12 +11,15 @@ function addNewUser(payload) {
         const userId = payload.from.id;
 
         db.get(sqlGet, [userId], (err, row) => {
+            if(err) {
+                console.log(err)
+            }
             if (!err && !row) {
                 db.run(sqlInsert);
             }
         });
     });
-    db.close();
+    // db.close();
 }
 
 function getUserList(resolve, reject) {
