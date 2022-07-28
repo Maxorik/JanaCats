@@ -22,11 +22,10 @@ function addNewUser(payload) {
 function getCountOfUsers(resolve, reject) {
     db.serialize(() => {
         let recordsList = [];
-        db.each("SELECT * FROM users", function(err, row) {
-            // err && reject(err);
+        db.each("SELECT * FROM users", (err, row) => {
             recordsList.push(row);
-            console.log(recordsList);
-        }, resolve(recordsList.length));
+            resolve(recordsList.length);
+        });
     });
     db.close();
 }
